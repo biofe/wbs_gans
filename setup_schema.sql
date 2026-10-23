@@ -22,7 +22,7 @@ CREATE TABLE city (
     longitude DECIMAL(10 , 7 )
 );
 
-drop table city_tmp;
+-- drop table city_tmp;
 -- Temporary city table for updating using pandas
 CREATE TABLE city_tmp (
     city_id INT PRIMARY KEY,
@@ -81,7 +81,7 @@ CREATE TABLE arrival (
     UNIQUE (at_iata, iata, arrival)
 );
 
-drop table arrival;
+-- drop table arrival;
 CREATE TABLE arrival_tmp (
     city_id INT NOT NULL,
     at_iata CHAR(3),
@@ -97,7 +97,7 @@ CREATE TABLE arrival_tmp (
     UNIQUE (at_iata, iata, arrival)
 );
 
-drop procedure update_arrival;
+-- drop procedure update_arrival;
 DELIMITER $$
 
 CREATE PROCEDURE update_city ()
@@ -131,7 +131,7 @@ END $$
 
 DELIMITER ;
 
-use gans;
+/*use gans;
 select * from city;
 select * from city_tmp;
 select * from solar_time;
@@ -142,3 +142,4 @@ drop table `table`;
 
 show processlist;
 kill 115;
+*/
