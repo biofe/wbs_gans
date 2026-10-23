@@ -34,7 +34,6 @@ CREATE TABLE city_tmp (
     latitude DECIMAL(10 , 7 ),
     longitude DECIMAL(10 , 7 )
 );
-select * from city_tmp;
 
 CREATE TABLE solar_time (
     city_id INT NOT NULL,
@@ -67,6 +66,38 @@ CREATE TABLE forecast (
 	UNIQUE (city_id, `time`)
 );
 
+CREATE TABLE arrival (
+    city_id INT NOT NULL,
+    at_iata CHAR(3),
+    icao CHAR(4),
+    iata CHAR(3) NOT NULL,
+    name TEXT,
+    country_code CHAR(2),
+    lat DECIMAL(10,7),
+    lon DECIMAL(10,7),
+    arrival VARCHAR(20) NOT NULL,
+    FOREIGN KEY (city_id)
+        REFERENCES city (city_id),
+    UNIQUE (at_iata, iata, arrival)
+);
+
+drop table arrival;
+CREATE TABLE arrival_tmp (
+    city_id INT NOT NULL,
+    at_iata CHAR(3),
+    icao CHAR(4),
+    iata CHAR(3) NOT NULL,
+    name TEXT,
+    country_code CHAR(2),
+    lat DECIMAL(10,7),
+    lon DECIMAL(10,7),
+    arrival VARCHAR(20) NOT NULL,
+    FOREIGN KEY (city_id)
+        REFERENCES city (city_id),
+    UNIQUE (at_iata, iata, arrival)
+);
+
+drop procedure update_arrival;
 DELIMITER $$
 
 CREATE PROCEDURE update_city ()
@@ -81,18 +112,33 @@ BEGIN
 		c.city_id = t.city_id;
 END $$
 
+CREATE PROCEDURE update_arrival ()
+
+BEGIN
+	INSERT INTO arrival (at_iata, city_id, icao, iata, name, country_code, lat, lon, arrival)
+    SELECT at_iata, city_id, icao, iata, name, country_code, lat, lon, arrival FROM arrival_tmp AS t
+    ON DUPLICATE KEY UPDATE
+        at_iata = t.at_iata,
+        city_id = t.city_id,
+        icao = t.icao,
+        iata = t.iata,
+        name = t.name,
+        country_code = t.country_code,
+        lat = t.lat,
+        lon = t.lon,
+        arrival = t.arrival;
+END $$
+
 DELIMITER ;
 
 use gans;
 select * from city;
+select * from city_tmp;
 select * from solar_time;
 select * from forecast;
+select * from arrival;
+call update_city();
 drop table `table`;
 
-UPDATE city AS c,
-    city_tmp AS t 
-SET 
-    c.country_code = t.country_code,
-    c.timezone = t.timezone
-WHERE
-    c.city_id = t.city_id;
+show processlist;
+kill 115;
