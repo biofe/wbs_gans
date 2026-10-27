@@ -67,7 +67,7 @@ def create_df(cities):
     return df_cleanup(pd.DataFrame(dat).set_index("city"))
 
 if __name__ == "__main__":
-    connection_string = f'mysql+pymysql://{os.environ["MYSQL_USER"]}:{os.environ["MYSQL_ROOT_PASSWORD"]}@{os.environ["MYSQL_HOST"]}:{os.environ["MYSQL_PORT"]}' #/{schema}'
+    connection_string = f'mysql+pymysql://{os.environ["GANS_APP_USER"]}:{os.environ["GANS_APP_PASSWORD"]}@{os.environ["MYSQL_HOST"]}:{os.environ["MYSQL_PORT"]}' #/{schema}'
 
     cities = [
         "Berlin",

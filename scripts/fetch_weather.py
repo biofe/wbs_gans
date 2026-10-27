@@ -58,7 +58,7 @@ def city_loc(city_df):
 
 if __name__ == "__main__":
     # Get the cities from the database
-    connection_string = f'mysql+pymysql://{os.environ["MYSQL_USER"]}:{os.environ["MYSQL_ROOT_PASSWORD"]}@{os.environ["MYSQL_HOST"]}:{os.environ["MYSQL_PORT"]}/gans' #/{schema}'
+    connection_string = f'mysql+pymysql://{os.environ["GANS_APP_USER"]}:{os.environ["GANS_APP_PASSWORD"]}@{os.environ["MYSQL_HOST"]}:{os.environ["MYSQL_PORT"]}/gans' #/{schema}'
     df = pd.read_sql(
         "SELECT * FROM city",
         con = connection_string,
@@ -143,8 +143,8 @@ if __name__ == "__main__":
     conn = pymysql.connect(
         host=os.environ["MYSQL_HOST"],
         port=int(os.environ["MYSQL_PORT"]),
-        user=os.environ["MYSQL_USER"],
-        password=os.environ["MYSQL_ROOT_PASSWORD"],
+        user=os.environ["GANS_APP_USER"],
+        password=os.environ["GANS_APP_PASSWORD"],
         database="gans",
     )
 
