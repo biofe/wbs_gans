@@ -127,16 +127,16 @@ if __name__ == "__main__":
         index=False,
     )
     solar_time.to_sql(
-        'solar_time',
+        'solar_time_tmp',
         schema="gans",
-        if_exists='append',
+        if_exists='replace',
         con=connection_string,
         index=False,
     )
     forecast_table.to_sql(
-        'forecast',
+        'forecast_tmp',
         schema="gans",
-        if_exists='append',
+        if_exists='replace',
         con=connection_string,
         index=False,
     )
@@ -150,6 +150,8 @@ if __name__ == "__main__":
 
     with conn.cursor() as c:
         c.callproc("update_city")
+        c.callproc("update_solar_time")
+        c.callproc("update_forecast")
 
     conn.commit()
     conn.close()
