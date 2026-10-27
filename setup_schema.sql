@@ -46,7 +46,38 @@ CREATE TABLE solar_time (
 	UNIQUE (city_id, sunrise)
 );
 
+CREATE TABLE solar_time_tmp (
+    city_id INT NOT NULL,
+    sunrise INT NOT NULL,
+    sunset INT NOT NULL,
+    sunrise_text TEXT,
+    sunset_text TEXT,
+    FOREIGN KEY (city_id)
+        REFERENCES city (city_id),
+	UNIQUE (city_id, sunrise)
+);
+
 CREATE TABLE forecast (
+	city_id INT NOT NULL,
+    `time` INT NOT NULL,
+    time_text TEXT,
+    temperature DECIMAL(5, 2),
+    temperature_felt DECIMAL(5, 2),
+    weather TEXT,
+    `description` TEXT,
+    weather_id TEXT,
+    precipitation_prob INT,
+    rain_3h DECIMAL(5, 2),
+    clouds INT,
+    pressure INT,
+    humidity INT,
+    icon_id CHAR(3),
+    FOREIGN KEY (city_id)
+        REFERENCES city (city_id),
+	UNIQUE (city_id, `time`)
+);
+
+CREATE TABLE forecast_tmp (
 	city_id INT NOT NULL,
     `time` INT NOT NULL,
     time_text TEXT,
@@ -110,6 +141,43 @@ BEGIN
 		c.timezone = t.timezone
 	WHERE
 		c.city_id = t.city_id;
+END $$
+
+CREATE PROCEDURE update_solar_time ()
+
+BEGIN
+	INSERT INTO solar_time (city_id, sunrise, sunset, sunrise_text, sunset_text)
+    SELECT city_id, sunrise, sunset, sunrise_text, sunset_text FROM solar_time_tmp AS t
+		ON DUPLICATE KEY UPDATE
+			city_id = t.city_id,
+			sunrise = t.sunrise,
+			sunset = t.sunset,
+			sunrise_text = t.sunrise_text,
+			sunset_text = t.sunset_text;
+
+END $$
+
+CREATE PROCEDURE update_forecast ()
+
+BEGIN
+	INSERT INTO forecast (city_id, time, time_text, temperature, temperature_felt, weather, description, weather_id, rain_3h, clouds, pressure, humidity, icon_id, precipitation_prob)
+    SELECT city_id, time, time_text, temperature, temperature_felt, weather, description, weather_id, rain_3h, clouds, pressure, humidity, icon_id, precipitation_prob FROM forecast_tmp AS t
+    ON DUPLICATE KEY UPDATE
+		city_id = t.city_id,
+		time = t.time,
+		time_text = t.time_text,
+		temperature = t.temperature,
+		temperature_felt = t.temperature_felt,
+		weather = t.weather,
+		description = t.description,
+		weather_id = t.weather_id,
+		rain_3h = t.rain_3h,
+		clouds = t.clouds,
+		pressure = t.pressure,
+		humidity = t.humidity,
+		icon_id = t.icon_id,
+		precipitation_prob = t.precipitation_prob;
+
 END $$
 
 CREATE PROCEDURE update_arrival ()
