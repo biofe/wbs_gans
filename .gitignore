@@ -2,3 +2,5 @@
 1_webScraping__structure.ipynb
 4_intro_to_apis.ipynb
 */.env
+server/
+medium/
