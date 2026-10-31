@@ -1,0 +1,8 @@
+# /etc/cron.d format: explicit PATH (cron's default is minimal) and a user
+# field per line (unlike a personal crontab). Must end with a blank line or
+# cron silently ignores the last entry.
+PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin
+
+0 */3 * * * root /usr/local/bin/python /app/scripts/fetch_weather.py >> /var/log/cron.log 2>&1
+0 5 * * * root /usr/local/bin/python /app/scripts/fetch_flights.py >> /var/log/cron.log 2>&1
+

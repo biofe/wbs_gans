@@ -1,0 +1,52 @@
+services:
+  mysql:
+    image: mysql:8.0.46
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      GANS_ADMIN_USER: ${GANS_ADMIN_USER}
+      GANS_ADMIN_PASSWORD: ${GANS_ADMIN_PASSWORD}
+      GANS_APP_USER: ${GANS_APP_USER}
+      GANS_APP_PASSWORD: ${GANS_APP_PASSWORD}
+      MYSQL_DATABASE: gans
+    ports:
+      # loopback-only: never reachable from outside this host.
+      # Remote access (e.g. MySQL Workbench) goes through an SSH tunnel instead.
+      - "127.0.0.1:3306:3306"
+    mem_limit: 1g
+    # Set explicitly rather than letting MySQL auto-size against host memory
+    # (which can be wrong inside a container with its own memory limit).
+    command: ["--innodb-buffer-pool-size=512M"]
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - gans-net
+
+  python-jobs:
+    build:
+      # Build context is the repo root, so the Dockerfile can COPY the
+      # top-level scripts/ directory without duplicating it under deploy/.
+      context: ..
+      dockerfile: deploy/python-jobs/Dockerfile
+    restart: unless-stopped
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: ${GANS_APP_USER}
+      # Named MYSQL_ROOT_PASSWORD only because that's the variable name the
+      # scripts read for "whatever password belongs to MYSQL_USER" — this is
+      # deliberately the least-privilege app user's password, never root's.
+      MYSQL_ROOT_PASSWORD: ${GANS_APP_PASSWORD}
+      API_KEY_OPENWEATHER: ${API_KEY_OPENWEATHER}
+      API_KEY_OPENAEROBOX: ${API_KEY_OPENAEROBOX}
+    depends_on:
+      - mysql
+    networks:
+      - gans-net
+
+volumes:
+  mysql-data:
+
+networks:
+  gans-net:
