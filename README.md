@@ -5,7 +5,7 @@ on city trip tourists, who come in by plane. Therefore, incoming flights at the
 respective airports and the weather is interesting information that is pulled
 via API and the geographic position is scraped from Wikipedia.
 
-**Full write-up of the project and the VPS deployment:** _add the Medium article link here once published._
+**Full write-up of the project and the VPS deployment:** [Gans, Grounded: What a Toy Data Pipeline Taught Me About Running Real Infrastructure](https://medium.com/@felix0180/gans-grounded-what-a-toy-data-pipeline-taught-me-about-running-real-infrastructure-be73255080c2)
 
 ### Pipeline
 
