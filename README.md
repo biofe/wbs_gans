@@ -40,6 +40,13 @@ exposed publicly) and a Python container running the scheduled jobs via cron.
 A sanitized copy of the actual Compose setup (secrets replaced with
 placeholders) is in [`deploy/`](deploy/).
 
+The full story — every obstacle hit setting this up and how each was fixed —
+is written up in [`server/docker-mysql-setup.md`](server/docker-mysql-setup.md).
+A matching [`server/teardown-checklist.md`](server/teardown-checklist.md)
+documents how the project was later removed from the VPS without a trace. (The
+project has since been torn down; the VPS itself and the SSH-hardening /
+swap-file changes from that writeup were kept.)
+
 ### Tools
 
 - Python:
